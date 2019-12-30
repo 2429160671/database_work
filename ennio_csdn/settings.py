@@ -78,33 +78,16 @@ WSGI_APPLICATION = 'ennio_csdn.wsgi.application'
 
 
 # tudo------------------------------------------------
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'ennio_csdn',
-#         'USER': 'root',
-#         'PASSWORD': 'wen52010',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ennio_csdn',
         'USER': 'root',
-        'PASSWORD': 'xaut111',
-        'HOST': '212.64.72.66',
+        'PASSWORD': 'wen52010',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
-
-
-
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {

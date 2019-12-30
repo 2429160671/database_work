@@ -34,7 +34,6 @@ class Blog(models.Model):
     一篇博客
     """
     title = models.CharField(max_length=40, verbose_name="标题")
-    #content = models.TextField(verbose_name="博客内容")
     content = HTMLField(verbose_name="博客内容")
     liked_number = models.IntegerField(verbose_name="点赞量", default=0)
     unliked_number = models.IntegerField(verbose_name="踩的数量", default=0)
@@ -42,7 +41,7 @@ class Blog(models.Model):
     commented_number = models.IntegerField(verbose_name="评论数量", default=0)
     csdnUser = models.ForeignKey(CsdnUser, models.CASCADE)
     pub_time = models.DateTimeField(auto_now_add=True)
-    blog_sort = models.ForeignKey(BlogSort, on_delete=False, null=True, blank=True)  # 不级联删除，分类删除了，文章并不删除
+    blog_sort = models.ForeignKey(BlogSort, on_delete=models.SET_NULL, null=True, blank=True)  # 不级联删除，分类删除了，文章并不删除
     index_sort = models.CharField(max_length=40, verbose_name="首页分类", default="其他")
 
     class Meta:

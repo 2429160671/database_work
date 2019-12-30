@@ -41,18 +41,19 @@ def index(request):
         else:
             blogs = Blog.objects.filter(Q(title__icontains=search) | Q(content__icontains=search))
             paginator = Paginator(blogs, records_per_page)
-            blogs = paginator.get_page(page)
+            if paginator:
+                blogs = paginator.get_page(page)
         result = True
         message = "成功"
     except Exception as err:
         result = False
         message = str(err)
-        blogs = paginator = page = None
+        blogs = paginator = None
     return render(request, "index.html", {
         'blogs': blogs,
         'code': 0,
         "csdnUser": getCsdnUser(request),
-        'page_range': paginator.page_range,
+        'page_range': paginator.page_range if paginator else 0,
         'page': int(page),
         'message': message,
         'result': result,
