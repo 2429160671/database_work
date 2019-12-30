@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block title %}博客细节{% endblock %}
+{% block script %}
+    <script>
+        function addComment(){
+                $.ajax({
+                    url: "{{ BASES_IRL }}/blog/comment/add",
+                    type: 'post',
+                    data: {
+                        "blog_id": $("input[name='blog_id']").val(),
+                        "content": $("#comment_content").val(),
+                        "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+
+                    },
+                    success: (function(response){
+                        if(response['code'] == 2){
+                            window.location.href = "{{ BASE_URL }}/login"
+                        }else{
+                            alert(response['message']);
+                            location.reload()
+                        }
+                    })
+                })
+            }
+
+        function like_or_unlike(type){
+            $.ajax({
+                url: "{{ BASE_URL }}/blog/"+type,
+                type: "get",
+                data: {
+                    "blog_id": $("input[name='blog_id']").val()
+                },
+                success: (function(response){
+                    if(response['code'] == 2){
+                        window.location.href = "{{ BASE_URL }}/login"
+                    }else{
+                        alert(response['message'])
+                        location.reload()
+                    }
+                })
+            })
+        }
+        function focus_comment(){
+            window.location.hash = "#comment_content"
+        }
+        function change_style(id, type, word) {
+            if (type == "over") {
+                //变为文字
+                document.getElementById(id).innerText = word;
+            } else {
+                //变为图标
+                if (word == "点赞") {
+                    text = "<span class=\"glyphicon glyphicon-thumbs-up\"></span>{{ blog.liked_number }}";
+                } else if (word == "评论") {
+                    text = "<span class=\"glyphicon glyphicon-comment\"></span>{{ blog.commented_number }}";
+                } else if (word == "反对") {
+                    text = "<span class=\"glyphicon glyphicon-thumbs-down\"></span>{{ blog.unliked_number }}";
+                }
+                document.getElementById(id).innerHTML = text;
+            }
+        }
+        $(document).ready(function(){
+            //改变博客内容
+            $("#comment").click(function(){
+                if($("#comment_content").val() == ""){
+                    alert("评论不能为空")
+                }else{
+                    addComment()
+                }
+            });
+
+            $("#like").click(function(){
+                like_or_unlike('like')
+            });
+
+            $("#unlike").click(function(){
+                like_or_unlike('unlike')
+            });
+        })
+    </script>
+{% endblock %}
+{% block left %}
+    <div class="container" style="width: 24%;float: left;background: white;margin-top: 60px;margin-left: 60px">
+        <div style="font-weight: 600;margin-left: 30px"><a href="#">{{ blog.csdnUser.user.username }}</a></div>
+        <div style="font-weight: 600;margin-left: 30px;margin-top: 15px"><a href="{{ BASE_URL }}/blog/index?username={{ blog.csdnUser.user.username }}">他的博客主页</a></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div>粉丝数</div>
+                <div id="followed_number">{{ blog_csdnUser.followed_number }}</div>
+            </div>
+            <div class="col-md-4">
+                <div>获赞</div>
+                <div id="liked_number">{{ blog_csdnUser.liked_number }}</div>
+            </div>
+            <div class="col-md-4">
+                <div>评论</div>
+                <div id="commented_number">{{ blog_csdnUser.commented_number }}</div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-md-4">
+                <div>访问量</div>
+                <div id="viewed_number">{{ blog_csdnUser.viewed_number }}</div>
+            </div>
+            <div class="col-md-4">
+                <div>周排名</div>
+                <div>12</div>
+            </div>
+            <div class="col-md-4">
+                <div>总排名</div>
+                <div>12</div>
+            </div>
+        </div>
+         <div style="background: white;padding-top: 10px;float: left">
+                <div style="font-weight: 600;font-size: 20px">
+                    分类专栏
+                </div>
+                <div style="margin-top: 10px;font-size: 15px">
+                    <ul class="nav nav-pills nav-stacked list-group">
+                        {% for blogs_sort in blogs_sorts %}
+                            <li>
+                                <div style="padding-bottom: 40px">
+                                    <div style="float: left;width:150px">
+                                        <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                            {{ blogs_sort.name }}
+                                        </a>
+                                    </div>
+                                    <div style="float: right;margin-left: 30px">
+                                        {{ blogs_sort.blogs_number }}&nbsp;篇
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+             <div style="font-weight: 600;font-size: 20px">
+                    访问较多的文章
+             </div>
+         {% if blogs_viewed_rank %}
+             <div style="margin-top: 10px;font-size: 15px">
+                    <ul class="nav nav-pills nav-stacked list-group">
+                        {% for blog in blogs_viewed_rank %}
+                            <li>
+                                <div style="padding-bottom: 40px">
+                                    <div style="float: left;width:150px">
+                                        <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                            {{ blog.title }}
+                                        </a>
+                                    </div>
+                                    <div style="float: right;margin-left: 30px">
+                                        {{ blog.viewed_number }}&nbsp;次
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+             {% else %}
+         {% endif %}
+             <div style="font-weight: 600;font-size: 20px">
+                    点赞数量较多的文章
+             </div>
+         {% if blogs_liked_rank %}
+             <div style="margin-top: 10px;font-size: 15px">
+                    <ul class="nav nav-pills nav-stacked list-group">
+                        {% for blog in blogs_liked_rank %}
+                            <li>
+                                <div style="padding-bottom: 40px">
+                                    <div style="float: left;width:150px">
+                                        <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                            {{ blog.title }}
+                                        </a>
+                                    </div>
+                                    <div style="float: right;margin-left: 30px">
+                                        {{ blog.liked_number }}&nbsp;次
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+             {% else %}
+         {% endif %}
+            <div style="font-weight: 600;font-size: 20px">
+                    评论数量较多的文章
+             </div>
+         {% if blogs_liked_rank %}
+             <div style="margin-top: 10px;font-size: 15px">
+                    <ul class="nav nav-pills nav-stacked list-group">
+                        {% for blog in blogs_commented_rank %}
+                            <li>
+                                <div style="padding-bottom: 40px">
+                                    <div style="float: left;width:150px">
+                                        <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                            {{ blog.title }}
+                                        </a>
+                                    </div>
+                                    <div style="float: right;margin-left: 30px">
+                                        {{ blog.commented_number }}&nbsp;条
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+             {% else %}
+         {% endif %}
+         </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    <div style="float: left;width: 60%;background: white;margin-top: 60px;margin-left: 10px;padding-top: 10px">
+        <div style="padding-left: 20px">
+            <h1>{{ blog.title }}</h1>
+            <div style="font-size: 15px;color: #e4b9b9;margin-bottom: 20px;">
+                发布于{{ blog.pub_time|date:"m-d-Y H:i:s" }} &nbsp;&nbsp;阅读数&nbsp;{{ blog.viewed_number }}&nbsp;&nbsp;&nbsp;发布者：{{ blog.csdnUser.user.username }}
+            </div>
+            <p>
+                <div id="content" style="line-height: 18px;width:97%;font-size:15px;white-space:pre;word-wrap: break-word;word-break: break-all;overflow: hidden;">
+                    {% autoescape off %} {{ blog.content }}{% endautoescape %}
+                </div>
+            </p>
+        </div>
+    <div style="margin-top: 30px">
+        {% csrf_token %}
+        <input type="hidden" value="{{ blog.id }}" name="blog_id">
+        <textarea name="" id="comment_content" cols="50" rows="4" placeholder="说出想对作者说得话吧" style="width:94%;margin-left: 20px;border: 2px solid black"></textarea>
+        <div style="float: right;margin-right: 30px;margin-top: 6px;margin-bottom: 20px">
+            <button id="comment" class="btn btn-default" style="color:white;background: red">发表评论</button>
+        </div>
+        <div style="width:100%;margin-top: 60px;word-wrap: break-word">
+        {% if comments %}
+            {% for comment in comments %}
+                <ul class="nav nav-pills nav-stacked" style="border-width: 0 0 1px 0;border-style: solid;border-color:#e4b9b9;margin-left: 20px;margin-bottom: 10px">
+                    <li role="presentation" style="font-size: 20px;font-weight: 700">
+                        <a style="float: left" href="{{ BASE_URL }}/blog/index?username={{ comment.csdnUser.user.username }}">{{ comment.csdnUser.user.username }}&nbsp;&nbsp;
+                        {{ comment.comment_time|date:"m-d-Y H:i:s" }}&nbsp;</a></li>
+                    <li role="presentation" style="font-size: 17px;clear: both;margin-left: 20px">{{ comment.content }}</li>
+                </ul>
+            {% endfor %}
+        {% else %}
+            <div style="text-align:center;margin-top: 10px;font-size: 20px;color: dodgerblue">
+                暂时还没有人评论呦~
+            </div>
+        {% endif %}
+        </div>
+    </div>
+    </div>
+    <div class="list-group" style="float: left;width:3%;background: white;margin-top: 60px;">
+          <button id="like" onmouseover="change_style('like','over', '点赞')" onmouseout="change_style('like','out', '点赞')"
+                  type="button" class="list-group-item">
+              <span class="glyphicon glyphicon-thumbs-up"></span>{{ blog.liked_number }}
+          </button>
+          <button id="unlike" onmouseover="change_style('unlike','over', '反对')" onmouseout="change_style('unlike','out', '反对')"
+                  type="button" class="list-group-item">
+              <span class="glyphicon glyphicon-thumbs-down"></span>
+              {{ blog.unliked_number }}
+          </button>
+          <button onclick="focus_comment()" onmouseover="change_style('comments','over', '评论')" onmouseout="change_style('comments','out', '评论')"
+                  id="comments" type="button" class="list-group-item">
+              <span class="glyphicon glyphicon-comment"></span>{{ blog.commented_number }}
+          </button>
+          <button id="collect" type="button" class="list-group-item"><span class="glyphicon glyphicon-star-empty"></span></button>
+          <button id="top" type="button" class="list-group-item"><span class="glyphicon glyphicon-chevron-up"></span></button>
+    </div>
+{% endblock %}

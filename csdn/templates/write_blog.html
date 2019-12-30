@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block left %}
+    <script>
+     KindEditor.ready(function (K) {
+        var editor = KindEditor.create('textarea[name="content"]', {
+            uploadJson: '{{ BASEL_URL }}/fileUpload',
+            fileManagerJson: '{{ BASEL_URL }}/fileManager',
+            allowFileManager: true,
+            items: ['source', '|', 'undo', 'redo', '|', 'preview', 'template', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'],
+            //编辑器失去焦点(blur)时执行的回调函数。
+            // =========必须要有==========
+            afterBlur: function () {
+                this.sync();
+                }
+            });
+        });
+
+        function post(){
+            $.ajax({
+                url: '{{ BASE_URL }}/add/blog',
+                type: 'post',
+                data: {
+                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val(),
+                    "title": $("#title").val(),
+                    "content": $("#content").val(),
+                    "blogSort": $("input[name='blogSort']:checked").val()
+                },
+                success: function(res){
+                    if(res['result']){
+                        alert("发表成功");
+                        window.location.href =  '{{ BASE_URL }}/blog/details?blog_id='+res['id']
+                    }else{
+                        alert(res['message'])
+                    }
+                }
+            })
+        }
+
+        $(document).ready(function(){
+            //让默认分类为checked
+            document.getElementById("默认分类").checked = true;
+            $("#post").click(function(){
+                post()
+            });
+        })
+</script>
+
+<div class="container" style="width: 12%;float: left;background: white;margin-top: 60px;margin-left: 20px;padding-top: 20px">
+        <ul class="nav nav-pills nav-stacked navbar-left">
+            <li role="presentation" class="active"><a href="#">分类</a></li>
+            {% for blogs_sort in blogs_sorts %}
+                <li onclick="wait()" role="presentation"><a href="#">{{ blogs_sort.name }}({{ blogs_sort.blogs_number }})</a></li>
+            {% endfor %}
+        </ul>
+</div>
+{% endblock %}
+{% block main %}
+<div class="container" style="float: left;width: 80%;background: white;margin-top: 60px;margin-left: 20px;border-bottom: 20px;padding-top: 20px">
+    {% csrf_token %}
+     <ul class="nav nav-pills nav-stacked list-group" >
+         <li role="presentation" class="list-group-item">
+             <div class="modal-title">
+                     <label for="title">标题</label>
+             </div>
+         </li>
+           <li role="presentation" class="list-group-item">
+             <div>
+                 <input type="text" id="title" style="width:100%">
+             </div>
+         </li>
+         <li role="presentation" class="list-group-item">
+             <div class="modal-title">
+                     <label for="content">内容</label>
+             </div>
+         </li>
+         <li role="presentation" class="list-group-item">
+             <textarea name="content" id="content" cols="127" rows="30" >
+
+             </textarea>
+         </li>
+         <li role="presentation" class="list-group-item">
+             {% for blogs_sort in blogs_sorts %}
+                 <label class="radio-inline">
+                     <input type="radio" name="blogSort" id="{{ blogs_sort.name }}" value="{{ blogs_sort.name }}">
+                     {{ blogs_sort.name }}
+                 </label>
+             {% endfor %}
+         </li>
+         <li>
+             <div style="padding-left: 30px;padding-top: 3px;">
+                 <button class="btn btn-primary" id="post" style="font-size: 15px;background: #0056b3;color:white">提交</button>
+             </div>
+         </li>
+        </ul>
+</div>
+
+{% endblock %}

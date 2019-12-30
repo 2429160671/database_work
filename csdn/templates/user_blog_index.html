@@ -1,0 +1,212 @@
+{% extends "blog_details.html" %}
+{% block script %}
+{#   这块必须为空，因为父类的之中ajax改变了左侧left之中的值，这里不需要用ajax，后台直接传值#}
+{% endblock %}
+{% block left %}
+    <div style="padding-top: 70px;height: 120px;font-size: 30px;color: blue;margin-left: 100px">
+        用户{{ blog_csdnUser.user.username }}的博客主页
+    </div>
+    <div class="container" style="width: 20%;float: left;background: white;margin-left: 100px">
+        <div>
+            <div style="margin-left: 30px"><a href="#">{{ blog_csdnUser.user.username }}</a></div>
+        <div style="margin-left: 30px;margin-top: 15px"><a>他的博客主页</a></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div>粉丝</div>
+                <div id="followed_number">0</div>
+            </div>
+            <div class="col-md-4">
+                <div>获赞</div>
+                <div id="liked_number">{{ blog_csdnUser.liked_number }}</div>
+            </div>
+            <div class="col-md-4">
+                <div>评论</div>
+                <div id="commented_number">{{ blog_csdnUser.commented_number }}</div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-md-4">
+                <div>访问量</div>
+                <div id="viewed_number">{{ blog_csdnUser.viewed_number }}</div>
+            </div>
+            <div class="col-md-4">
+                <div>周排名</div>
+                <div>12</div>
+            </div>
+            <div class="col-md-4">
+                <div>总排名</div>
+                <div>12</div>
+            </div>
+        </div>
+        </div>
+        <div style="background: white;padding-top: 10px;float: left">
+            <div style="font-weight: 600;font-size: 20px">
+                分类专栏
+            </div>
+            <div style="margin-top: 10px;font-size: 15px">
+                <ul class="nav nav-pills nav-stacked list-group">
+                    {% for blogs_sort in blogs_sorts %}
+                        <li>
+                            <div style="padding-bottom: 40px">
+                                <div style="float: left;width:150px">
+                                    <a href="#">
+                                        {{ blogs_sort.name }}
+                                    </a>
+                                </div>
+                                <div style="float: right;margin-left: 30px">
+                                    {{ blogs_sort.blogs_number }}&nbsp;篇
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div style="font-weight: 600;font-size: 20px">
+                访问较多的博客
+            </div>
+            {% if blogs %}
+            <div style="margin-top: 10px;font-size: 15px">
+                <ul class="nav nav-pills nav-stacked list-group">
+                    {% for blog in blogs_viewed_rank %}
+                        <li>
+                            <div style="padding-bottom: 40px">
+                                <div style="float: left;width:150px">
+                                    <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                        {{ blog.title }}
+                                    </a>
+                                </div>
+                                <div style="float: right;margin-left: 30px">
+                                    {{ blog.viewed_number }}&nbsp;篇
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+                <div style="margin-top: 10px;font-size: 15px;color: dodgerblue">
+                    Ta暂时还没有发布过博客呦~
+                </div>
+            {% endif %}
+        <div style="font-weight: 600;font-size: 20px">
+                点赞较多的博客
+            </div>
+            {% if blogs %}
+            <div style="margin-top: 10px;font-size: 15px">
+                <ul class="nav nav-pills nav-stacked list-group">
+                    {% for blog in blogs_liked_rank %}
+                        <li>
+                            <div style="padding-bottom: 40px">
+                                <div style="float: left;width:150px">
+                                    <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                        {{ blog.title }}
+                                    </a>
+                                </div>
+                                <div style="float: right;margin-left: 30px">
+                                    {{ blog.liked_number }}&nbsp;次
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+                <div style="margin-top: 10px;font-size: 15px;color: dodgerblue">
+                    Ta暂时还没有发布过博客呦~
+                </div>
+            {% endif %}
+        <div style="font-weight: 600;font-size: 20px">
+                评论较多的博客
+            </div>
+            {% if blogs %}
+            <div style="margin-top: 10px;font-size: 15px">
+                <ul class="nav nav-pills nav-stacked list-group">
+                    {% for blog in blogs_viewed_rank %}
+                        <li>
+                            <div style="padding-bottom: 40px">
+                                <div style="float: left;width:150px">
+                                    <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                        {{ blog.title }}
+                                    </a>
+                                </div>
+                                <div style="float: right;margin-left: 30px">
+                                    {{ blog.commented_number }}&nbsp;条
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+                <div style="margin-top: 10px;font-size: 15px;color: dodgerblue">
+                    Ta暂时还没有发布过博客呦~
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+{% block main %}
+<div style="float: left;width: 65%;background: white;margin-left: 5px;">
+    <ul class="nav nav-pills nav-stacked list-group">
+         {% if blogs %}
+            {% for blog in blogs %}
+                <li role="presentation" class="list-group-item" style="padding-bottom:30px;">
+                    <div>
+                        <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                            <h2 style="font-size:23px;font-weight: 600;color: deepskyblue;margin-left: 20px">
+                                {{ blog.title }}
+                            </h2>
+                        </a>
+                    </div>
+                    <div style="padding-left: 20px">
+                         <div style="font-size: 15px;color: #e4b9b9;margin-bottom: 20px;">
+                            发布于{{ blog.pub_time|date:"m-d-Y H:i:s" }} &nbsp;&nbsp;阅读数&nbsp;{{ blog.viewed_number }}&nbsp;&nbsp;&nbsp;发布者：{{ blog.csdnUser.user.username }}
+                    </div>
+                        <div class="tab-content">
+                            {{ blog.content }}
+                        </div>
+                    </div>
+                    <div class="author" style="float: right;padding-bottom: 10px">
+                        <h5>
+                            阅读量：{{ blog.viewed_number }}&nbsp;&nbsp;
+                            点赞数：{{ blog.liked_number }}&nbsp;&nbsp;
+                            评论数：{{ blog.commented_number }}
+                        </h5>
+                    </div>
+                </li>
+            {% endfor %}
+         {% else %}
+                <h2 style="padding-left: 200px;font-size: 30px;color:deepskyblue;">
+                    Ta暂时还没有发布过博客呦~
+                </h2>
+         {% endif %}
+    </ul>
+</div>
+<nav aria-label="Page navigation" style="padding-left: 50%;clear:both;margin-top: 10px">
+  <ul class="pagination pagination-lg">
+
+  {% if blogs %}
+      {% if blogs.has_previous %}
+            <li>
+                <a href="{{ BASE_URL }}/blog/index?username={{ blog_csdnUser.user.username }}&page={{ blogs.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+      {% endif %}
+      {% for num in page_range %}
+         <li  {% ifequal num page %}class="active"{% endifequal %}><a href="{{ BASE_URL }}/blog/index?username={{ blog_csdnUser.user.username }}&page={{ num }}">{{ num }}</a></li>
+      {% endfor %}
+      {% else %}
+          {% if blogs.has_next %}
+               <li>
+                  <a href="{{ BASE_URL }}/blog/index?username={{ blog_csdnUser.user.username }}&page={{ blogs.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+          {% endif %}
+  {% endif %}
+
+  </ul>
+</nav>
+{% endblock %}

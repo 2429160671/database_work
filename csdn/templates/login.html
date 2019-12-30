@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<html lang="zxx">
+
+<head>
+	<title>Triple Forms Responsive Widget Template :: w3layouts</title>
+	<!-- Meta tag Keywords -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8" />
+	<meta name="keywords" content="Triple Forms Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+	<script src="/static/js/jquery-1.11.2.min.js"></script>
+
+	<!-- Meta tag Keywords -->
+
+	<!-- css files -->
+	<link rel="stylesheet" href="/static/css/style.css" type="text/css" media="all" />
+	<!-- Style-CSS -->
+	<link href="/static/css/font-awesome.min.css" rel="stylesheet">
+	<!-- Font-Awesome-Icons-CSS -->
+	<!-- //css files -->
+
+	<!-- web-fonts -->
+	<link href="//fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext"
+	 rel="stylesheet">
+	<!-- //web-fonts -->
+
+    <script>
+        function wait() {
+            alert("该功能待完善,点击说明查看已有功能")
+        }
+        function login(){
+            $.ajax({
+                url: "{{ BASE_URL }}/user/login",
+                type: 'post',
+                data: {
+                    "username": $("#login_username").val(),
+                    "password": $("#login_password").val(),
+                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success:(function(response){
+                    if(response['result']){
+                        alert(response['message']);
+                        window.location.href = "{{ BASE_URL }}/";
+                    }else{
+                        alert(response['message']);
+                        location.reload()
+                    }
+                })
+            })
+        }
+
+        function register(){
+            $.ajax({
+                url: "{{ BASES_IRL }}/user/register",
+                type: 'post',
+                data: {
+                    "username": $("#register_username").val(),
+                    "password": $("#register_password").val(),
+                    "email": $("#register_email").val(),
+                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success: (function(response){
+                    alert(response['message']);
+                    location.reload()
+                })
+            })
+        }
+
+        $(document).ready(function(){
+            $("#register").click(function(){
+                var pwd = $("#register_password").val();
+                var pwd2 = $("#register_password2").val();
+                if(pwd == pwd2 ){
+                    register();
+                }else{
+                    alert("两次密码不一致")
+                    location.reload()
+                }
+            });
+
+             $("#login").click(function(){
+                login();
+            });
+        });
+
+
+		addEventListener("load", function () {
+			setTimeout(hideURLbar, 0);
+		}, false);
+
+		function hideURLbar() {
+			window.scrollTo(0, 1);
+		}
+	</script>
+</head>
+
+<body>
+	<div class="main-bg">
+		<!-- title -->
+		<h1 id="title" style="color: black;">Welcome to ennio_csdn</h1>
+		<!-- //title -->
+		<div class="sub-main-w3">
+			<div class="image-style">
+
+			</div>
+			<!-- vertical tabs -->
+			<div class="vertical-tab">
+				<div id="section1" class="section-w3ls">
+					<input type="radio" name="sections" id="option1" checked>
+					<label for="option1" class="icon-left-w3pvt"><span class="fa fa-user-circle" aria-hidden="true"></span>登录</label>
+					<article>
+						<form method="post">
+							<h3 class="legend">登录</h3>
+                            {% csrf_token %}
+							<div class="input">
+								<span class="fa fa-user-o" aria-hidden="true"></span>
+								<input type="text" placeholder="用户名" id="login_username" name="username" required />
+							</div>
+							<div class="input">
+								<span class="fa fa-key" aria-hidden="true"></span>
+								<input type="password" placeholder="密码" id="login_password" name="password" required />
+							</div>
+							<button type="submit" class="btn submit" id="login">登录</button>
+						</form>
+					</article>
+				</div>
+				<div id="section2" class="section-w3ls">
+					<input type="radio" name="sections" id="option2">
+					<label for="option2" class="icon-left-w3pvt"><span class="fa fa-pencil-square" aria-hidden="true"></span>注册</label>
+					<article>
+						<form method="post">
+							<h3 class="legend">注册</h3>
+                            {% csrf_token %}
+							<div class="input">
+								<span class="fa fa-user-o" aria-hidden="true"></span>
+								<input type="text" placeholder="用户名" id="register_username" name="username" required />
+							</div>
+							<div class="input">
+								<span class="fa fa-key" aria-hidden="true"></span>
+								<input type="password" placeholder=密码 id="register_password" name="password" required />
+							</div>
+							<div class="input">
+								<span class="fa fa-key" aria-hidden="true"></span>
+								<input type="password" placeholder="重复密码" id="register_password2" name="password" required />
+							</div>
+      					    <div class="input">
+								<span class="fa fa-envelope-o" aria-hidden="true"></span>
+								<input type="email" placeholder="邮箱" id="register_email" name="email" required />
+							</div>
+							<button type="submit" class="btn submit" id="register">注册</button>
+						</form>
+					</article>
+				</div>
+				<div id="section3" class="section-w3ls">
+					<input type="radio" name="sections" id="option3">
+					<label for="option3" class="icon-left-w3pvt"><span class="fa fa-lock" aria-hidden="true"></span>忘记密码？</label>
+					<article>
+							<h3 class="legend last">重置密码</h3>
+							<p class="para-style">请输入你的邮箱，根据我们发送给你的信息来重置密码</p>
+							<div class="input">
+								<span class="fa fa-envelope-o" aria-hidden="true"></span>
+								<input type="email" placeholder="Email" name="email" required />
+							</div>
+							<button onclick="wait()" class="btn submit last-btn">重置</button>
+					</article>
+				</div>
+			</div>
+			<!-- //vertical tabs -->
+			<div class="clear"></div>
+		</div>
+		<!-- copyright -->
+		<div class="copyright">
+			<h2>&copy; 2019 Triple Forms. All rights reserved | Design by
+				<a href="http://w3layouts.com" target="_blank">W3layouts</a>
+			</h2>
+		</div>
+		<!-- //copyright -->
+	</div>
+</body>
+
+</html>

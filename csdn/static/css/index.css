@@ -1,0 +1,27 @@
+.nav_com{
+    position: relative;
+    width: 10%;
+    background: white;
+    float: left;
+    left: -40px;
+}
+
+body{
+    background: #e0e0e0;
+}
+
+#main{
+    position: relative;
+    background: white;
+    width: 80%;
+    float: left;
+    left: -100px;
+}
+
+.tab-content{
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+

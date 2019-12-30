@@ -1,0 +1,110 @@
+{% extends "blog_manage_base.html" %}
+{% block title %}博客分类管理{% endblock %}
+{% block script %}
+    <script>
+        function addSort(){
+            var csdnUser_id = "{{ csdnUser.id }}";
+            var sort_name = $("#myModal").find("#sort_name").val();
+            var sort_intro = $("#myModal").find("#sort_intro").val();
+            $.ajax({
+                url: "{{ BASE_URL }}/user/blog/sort/add",
+                type: "post",
+                data: {
+                    "csdnUser_id": csdnUser_id,
+                    "sort_name": sort_name,
+                    "sort_intro": sort_intro,
+                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success: (function(response){
+                    alert(response['message']);
+                    location.reload()
+                })
+            })
+        }
+        function Delete(sort_id){
+            $.ajax({
+                url: "{{ BASE_URL }}/user/blog/sort/delete",
+                type: "post",
+                data: {
+                    "sort_id": sort_id,
+                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success: (function(response){
+                    alert(response['message']);
+                    location.reload()
+                })
+            })
+        }
+        function blogSortDelete(sort_id, sort_name){
+            if(sort_name == "默认分类"){
+                alert("不可删除系统默认分类")
+            }else{
+                Delete(sort_id)
+            }
+        }
+        $(document).ready(function(){
+            document.getElementById("sort_manage").classList.add("active")
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div style="float: left;width: 80%;background: white;margin-top: 60px;margin-left: 10px;">
+        <ul class="nav nav-pills nav-stacked list-group" >
+            <li role="presentation" class="list-group-item" style="height:100px;padding-bottom:10px;">
+                <div style="float: left">
+                    <h3 style="color: #e4b9b9">这里是你的博客分类信息，你可以看到你的博客分类的相关信息并进行修改</h3>
+                </div>
+                <div style="float: right;margin-top: 20px;margin-right: 10px;"  type="button" data-toggle="modal" data-target="#myModal">
+                    <button class="btn btn-warning" id="add_sort">新建分类</button>
+                </div>
+            </li>
+            <li role="presentation" class="list-group-item" style="color: black;height: 50px;padding-bottom: 10px;">
+                <div style="float: left;margin-left: 2%">类别</div>
+                <div style="float: left;margin-left: 40%">操作</div>
+                <div style="float: right; margin-right: 11%">文章数</div>
+            </li>
+            {% for blog_sort in blog_sorts %}
+                    <li role="presentation" class="list-group-item" style="height: 50px;font-size: 16px">
+                        <div style="width: 20%;float: left;margin-left: 1%">{{ blog_sort.name }}</div>
+                        <div style="float: left;margin-left: 23%">
+                            {% csrf_token %}
+                            <a href="#" onclick="blogSortDelete('{{ blog_sort.id }}', '{{ blog_sort.name }}')">删除</a>
+                            <a href="#">修改</a>
+                        </div>
+                        <div style="float: right; margin-right: 13%">{{ blog_sort.blogs_number }}</div>
+                    </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div style=clear:both;text-align:center;">
+        <div style="margin-left: 10%;font-size: 30px;color:deepskyblue;padding-top: 20px;">
+            没有更多啦~
+        </div>
+    </div>
+
+<!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        {% csrf_token %}
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">新建分类</h4>
+          </div>
+          <div class="modal-body">
+              <div class="input-group" style="padding-bottom: 10px">
+                  <input type="text" class="form-control" id="sort_name" placeholder="输入分类名" aria-describedby="basic-addon2" style="width:500px">
+              </div>
+              <textarea class="form-control" style="width: 100%" id="sort_intro" rows="10" placeholder="输入分类的简介"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" onclick="addSort()">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

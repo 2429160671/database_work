@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}ennio_csdn{% endblock %}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!-- Bootstrap -->
+    <link href="/static/bootstrap-3.3.4-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/index.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="/static/js/jquery-1.11.2.min.js"></script>
+    <script charset="utf-8" src="/static/kindeditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="/static/kindeditor/lang/zh-CN.js"></script>
+
+    <script>
+        function wait(){
+            alert("该功能待完善,可点击项目说明文档查看已开发功能~")
+        }
+    </script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+     <script>
+        function exit() {
+            $.ajax({
+                url: '{{ BASE_URL }}/exit',
+                type: 'get',
+                success: function (res) {
+                    alert(res['message']);
+                    window.location.href = "{{ BASE_URL }}/"
+                }
+            })
+        }
+
+        $(document).ready(function(){
+            $("#exit").click(function(){
+                exit()
+            });
+            $("#search").click(function(){
+                var search = $("input[name='search']").val();
+                window.location.href = "{{ BASE_URL }}?search="+search
+            });
+        })
+    </script>
+    {% block script %}{% endblock %}
+</head>
+<body>
+{% block nav-bar %}
+<div class="container clear" style="display: block;">
+    <nav class="navbar navbar-fixed-top" style="background: white;display: block">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{ BASE_URL }}/">首页</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li onclick="wait()" class="active"><a href="#">博客<span class="sr-only">(current)</span></a></li>
+            <li onclick="wait()" ><a href="#">问答</a></li>
+            <li class="dropdown"  onclick="wait()" >
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+            </li>
+          </ul>
+          <form class="navbar-form navbar-left">
+            <div class="form-group">
+              <input id="keywords" name="search" type="text" class="form-control" placeholder="关键字" {% if search %}value="{{ search }}{% endif %}">
+            </div>
+            <button id="search" type="submit" class="btn btn-default">搜索</button>
+              <div style="color: #e4b9b9; float: right;font-size: 13px">
+                  &nbsp;ps:一个小bug所以必须在主页搜索
+              </div>
+          </form>
+
+          <ul class="nav navbar-nav navbar-right">
+              {% if csdnUser %}
+                  <li style="font-size: 14px;padding: 15px;color: #337ab7">当前用户：{{ csdnUser.user.username }}</li>
+              {% endif %}
+              <li style="margin-top: 5px">
+                  <button class="btn-warning btn" data-toggle="modal" data-target="#myModal">
+                    项目说明文档
+                  </button>
+              </li>
+              <li><a href="{{ BASE_URL }}/write/blog">写博客</a></li>
+
+              <li class="dropdown">
+                {% if csdnUser %}
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">我的<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ BASE_URL }}/blog/index?username={{ csdnUser.user.username }}">我的博客</a></li>
+                        <li><a href="{{ BASE_URL }}/user/blog/manage">博客管理</a></li>
+                        <li onclick="wait()"><a href="#">点赞</a></li>
+                        <li onclick="wait()"><a href="#">通知</a></li>
+                        <li onclick="wait()"><a href="#" id="test">个人信息</a></li>
+                        <li><a id="exit">退出登录</a></li>
+                    </ul>
+                {% else %}
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">尚未登录<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                       <li><a href="{{ BASE_URL }}/login" >注册</a></li>
+                        <li><a href="{{ BASE_URL }}/login" >登录</a></li>
+                    </ul>
+                {% endif %}
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+</div>
+{% endblock %}
+{% block left %}{% endblock %}
+{% block main %}{% endblock %}
+{% block copyright %}
+    <div style="height:100px;width:100%;clear: both;font-size: 20px;padding-top:15px;text-align:center">
+        <span><strong>copyright@Ennio---start-2019-12-20</strong></span>
+    </div>
+{% endblock %}
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">项目说明文档</h4>
+      </div>
+      <div class="modal-body">
+        <ul style="line-height: 27px">
+            <li style="font-weight: 600;font-size: 20px;color: blue">项目简介</li>
+            <li>项目名：ennio_csdn</li>
+            <li>版本：1.0</li>
+            <li>author: Ennio(温鸿飞)</li>
+            <li>开始时间：2019-12-20</li>
+            <li style="font-weight: 600;font-size: 20px;color: blue">已有功能</li>
+            <li style="font-weight: 600">首页--登录，注册</li>
+            <li style="font-weight: 600">首页显示文章：文章摘要,发布时间,作者，阅读量，当前登录用户等</li>
+            <li>首页---写博客，进入写博客界面，富文本编辑器写博客</li>
+            <li>根据搜索关键字对文章标题和内容进行匹配并显示</li>
+            <li style="font-weight: 600">点击文章标题进入文章详情页</li>
+            <li>文章详情页显示文章信息，评论以及作者的相关信息</li>
+            <li>可以对文章进行点赞，反对，评论</li>
+            <li style="font-weight: 600">点击发布者名字进入用户博客主页</li>
+            <li>用户博客主页显示博主信息，博客相关信息</li>
+            <li>登录之后的操作</li>
+            <li style="font-weight: 600">首页--我的---我的博客</li>
+            <li>进入我的博客主页</li>
+            <li style="font-weight: 600">首页--我的---博客管理(对分类和文章进行管理)</li>
+            <li>左侧文章管理对我的文章进行管理(删除，查看)</li>
+            <li>左侧分类管理对我的分类进行管理(删除，新建)</li>
+            <li style="font-weight: 600">备注：</li>
+            <li>首页上方导航栏根据用户是否登录来显示不同的信息</li>
+            <li>写博客，博客管理等必须登录才能进行操作</li>
+            <li>后端代码均放在try当中进行书写，确保不会出现500给用户</li>
+            <li>后端对所有的输入信息进行检测，前端只负责显示信息</li>
+            <li style="font-weight: 600;font-size: 20px;color: blue">待完善功能</li>
+            <li>首页内容ajax显示(滚轮到最底部时候显示更多信息)</li>
+            <li>首页内容只显示文字，不出现html代码</li>
+            <li>找回密码</li>
+            <li>点赞，回复通知</li>
+            <li>博客添加首页分类</li>
+            <li>用户之间关注</li>
+            <li>修改博客</li>
+            <li>个人信息模块</li>
+            <li>评论管理，收藏管理，博客数据统计</li>
+            <li>博客详情页下方推荐博客(根据博客关键字进行相似度匹配)</li>
+            <li>首页关键字搜索功能优化，用到相关算法</li>
+            <li>富文本编辑器的图片上传功能</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

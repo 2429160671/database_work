@@ -1,0 +1,88 @@
+{% extends "blog_manage_base.html" %}
+{% block title %}博客管理{% endblock %}
+{% block script %}
+    <script>
+        function blog_delete(blog_id){
+            $.ajax({
+                url:  "{{ BASE_URL }}/user/blog/delete",
+                type: "post",
+                data: {
+                    'blog_id': blog_id,
+                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+
+                },
+                success: (function(res){
+                    alert(res['message']);
+                    location.reload()
+                })
+            })
+        }
+        $(document).ready(function(){
+            //改变左侧导航栏样式
+            document.getElementById("blog_manage").classList.add("active")
+
+            {% for blog in blogs %}
+                $("#{{ blog.id }}").click(function(){
+                   blog_delete("{{ blog.id }}")
+                });
+            {% endfor %}
+        })
+    </script>
+{% endblock %}
+
+{% block main %}
+{% if blogs %}
+    <div style="float: left;width: 80%;background: white;margin-top: 60px;margin-left: 20px;">
+            <ul class="nav nav-pills nav-stacked list-group">
+                     {% csrf_token %}
+                    {% for blog in blogs %}
+                        <li role="presentation" class="list-group-item" style="padding-bottom:10px;">
+                            <div>
+                                <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">
+                                    <h2 style="font-size:23px;font-weight: 600;color: deepskyblue;padding-left: 10px">
+                                        {{ blog.title }}
+                                    </h2>
+                                </a>
+                            </div>
+                            <div style="padding-left: 10px">
+                                 <div style="font-size: 15px;color: #e4b9b9;margin-top: 20px;">
+                                    发布于{{ blog.pub_time|date:"m-d-Y H:i:s" }} &nbsp;&nbsp;阅读数&nbsp;{{ blog.viewed_number }}&nbsp;&nbsp;&nbsp;评论数&nbsp;{{ blog.commented_number }}
+                                        <div style="float: right;color: black">
+                                            <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">查看&nbsp;</a>
+                                            <a href="#" id="{{ blog.id }}">删除&nbsp;</a>
+                                        </div>
+                                 </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+            </ul>
+    </div>
+    <nav aria-label="Page navigation" style="padding-left: 50%;clear:both;margin-top: 10px">
+      <ul class="pagination pagination-lg">
+        {% if blogs.has_previous %}
+             <li>
+                <a href="{{ BASE_URL }}?page={{ blogs.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+        {% for num in page_range %}
+             <li  {% ifequal num page %}class="active"{% endifequal %}><a href="{{ BASE_URL }}?page={{ num }}">{{ num }}</a></li>
+        {% endfor %}
+      {% if blogs.has_next %}
+       <li>
+          <a href="{{ BASE_URL }}?page={{ blogs.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      {% endif %}
+      </ul>
+    </nav>
+    {% else %}
+        <div style="padding-top: 50px;text-align: center">
+                <h2 style="padding-left: 200px;font-size: 30px;color:deepskyblue;">
+            Ta暂时还没有发布过博客呦~
+        </h2>
+        </div>
+{% endif %}
+{% endblock %}

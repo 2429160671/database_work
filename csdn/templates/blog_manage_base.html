@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block left %}
+
+<div class="container" style="width: 15%;float: left;background: white;margin-top: 60px;margin-left: 40px">
+    <ul class="nav nav-pills nav-stacked navbar-left" style="width:100%">
+        <li role="presentation" id="blog_manage"><a href="{{ BASE_URL }}/user/blog/manage">文章管理</a></li>
+        <li role="presentation" id="sort_manage"><a href="{{ BASE_URL }}/user/blog/sort/manage">分类管理</a></li>
+        <li onclick="wait()" role="presentation" id="comment_manage"><a href="#">评论管理</a></li>
+        <li onclick="wait()" role="presentation"><a href="#">收藏管理</a></li>
+        <li  onclick="wait()" role="presentation"><a href="#">博客数据统计</a></li>
+    </ul>
+</div>
+{% endblock %}
