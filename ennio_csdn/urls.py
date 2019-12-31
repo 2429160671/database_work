@@ -42,8 +42,10 @@ urlpatterns = [
     # 用户相关接口
     path('user/get/info', blog_manage.get_user_info),      # 用户主页的相关接口,ajax调用
     path('user/blog/manage', blog_manage.user_blog_manage),  # 用户博客管理主界面
-    path('user/blog/sort/manage', blog_manage.user_blog_sort_manage),  # 用户博客分类管理
-    path('user/blog/sort/add', blog_manage.user_blog_sort_add),         # 添加博客分类
-    path('user/blog/delete', blog_manage.user_blog_delete),              # 删除博客
-    path('user/blog/sort/delete', blog_manage.user_blog_sort_delete),         # 删除博客分类
+    path('user/blog/sort/manage', blog_manage.user_blog_sort_manage),      # 用户博客分类管理
+    path('user/blog/sort/add', blog_manage.user_blog_sort_add),            # 添加博客分类
+    path('user/blog/delete', blog_manage.user_blog_delete),                # 删除博客
+    path('user/blog/sort/delete', blog_manage.user_blog_sort_delete),      # 删除博客分类
+    path('user/blog/change/index', blog_manage.user_change_blog_index),    # 修改博客入口
+    path('user/blog/change', blog_manage.user_change_blog)                 # 修改博客操作
 ]

@@ -43,8 +43,8 @@
                                     发布于{{ blog.pub_time|date:"m-d-Y H:i:s" }} &nbsp;&nbsp;阅读数&nbsp;{{ blog.viewed_number }}&nbsp;&nbsp;&nbsp;
                                 </div>
                             </div>
-                            <div class="tab-content" style="padding-left: 10px">
-                                {{ blog.content }}
+                              <div class="tab-content" style="padding-left: 10px;height: 45px">
+                                内容简介：{% autoescape off %} {{ blog.content }}{% endautoescape %}
                             </div>
                             <div style="float: left;margin-top: 5px;padding-left: 10px">
                                 发布者：

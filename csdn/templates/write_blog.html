@@ -44,12 +44,42 @@
             })
         }
 
+         function change(){
+            $.ajax({
+                url: '{{ BASE_URL }}/user/blog/change',
+                type: 'post',
+                data: {
+                    'blog_id': '{{ blog.id }}',
+                    "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val(),
+                    "title": $("#title").val(),
+                    "content": $("#content").val(),
+                    "blog_sort": $("input[name='blogSort']:checked").val()
+                },
+                success: function(res){
+                    if(res['result']){
+                        alert("修改成功");
+                        window.location.href =  '{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}'
+                    }else{
+                        alert(res['message'])
+                    }
+                }
+            })
+        }
         $(document).ready(function(){
-            //让默认分类为checked
-            document.getElementById("默认分类").checked = true;
-            $("#post").click(function(){
-                post()
-            });
+            {% if blog %}
+                // 修改博客，让博客原分类为true
+                document.getElementById("{{ blog.blog_sort.name }}").checked = true
+                $("#post").click(function(){
+                    change()
+                });
+            {% else %}
+                //让默认分类为checked
+                document.getElementById("默认分类").checked = true;
+                $("#post").click(function(){
+                    post()
+                });
+            {% endif %}
+
         })
 </script>
 
@@ -73,7 +103,7 @@
          </li>
            <li role="presentation" class="list-group-item">
              <div>
-                 <input type="text" id="title" style="width:100%">
+                 <input type="text" id="title" style="width:100%" {% if blog %}value="{{ blog.title }}{% endif %}">
              </div>
          </li>
          <li role="presentation" class="list-group-item">
@@ -83,7 +113,9 @@
          </li>
          <li role="presentation" class="list-group-item">
              <textarea name="content" id="content" cols="127" rows="30" >
-
+                {% if blog %}
+                   {% autoescape off %} {{ blog.content }}{% endautoescape %}
+                 {% endif %}
              </textarea>
          </li>
          <li role="presentation" class="list-group-item">

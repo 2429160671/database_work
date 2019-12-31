@@ -48,6 +48,7 @@
                                  <div style="font-size: 15px;color: #e4b9b9;margin-top: 20px;">
                                     发布于{{ blog.pub_time|date:"m-d-Y H:i:s" }} &nbsp;&nbsp;阅读数&nbsp;{{ blog.viewed_number }}&nbsp;&nbsp;&nbsp;评论数&nbsp;{{ blog.commented_number }}
                                         <div style="float: right;color: black">
+                                            <a href="{{ BASE_URL }}/user/blog/change/index?blog_id={{ blog.id }}">修改</a>
                                             <a href="{{ BASE_URL }}/blog/details?blog_id={{ blog.id }}">查看&nbsp;</a>
                                             <a href="#" id="{{ blog.id }}">删除&nbsp;</a>
                                         </div>

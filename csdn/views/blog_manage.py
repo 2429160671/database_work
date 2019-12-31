@@ -119,17 +119,19 @@ def user_change_blog_index(request):
         blog_id = request.GET.get("blog_id")
         csdnUser = getCsdnUser(request)
         blog = Blog.objects.get(id=blog_id)
+        blogs_sorts = BlogSort.objects.filter(csdnUser=csdnUser)
         message = "成功"
         result = True
     except Exception as err:
         message = str(err)
         blog = csdnUser = None
         result = False
-    return render(request, "blog_manage_change.html", {
+    return render(request, "write_blog.html", {
         'message': message,
         'csdnUser': csdnUser,
         'blog': blog,
-        'result': result
+        'result': result,
+        'blogs_sorts': blogs_sorts,
     })
 
 
@@ -154,7 +156,7 @@ def user_change_blog(request):
             blog.blog_sort = blog_sort_now
             blog_sort_now.save()
             blog_sort_ever.save()
-        blog.save()
+        blog.save()      # 保存其他更改
         message = "修改成功"
         result = True
     except Exception as err:
